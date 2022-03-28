@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{variables["name"]}}
+spec:
+  selector:
+    matchLabels:
+      app: {{variables["name"]}}
+  template:
+    metadata:
+      labels:
+        app: {{variables["name"]}}
+    spec:
+      containers:
+        - name: {{variables["name"]}}
+          image: minaprotocol/mina-daemon:latest
+          args: ["daemon", "--external-port", "8302"]
+          ports:
+            - containerPort: 8302
+          volumeMounts:
+            - mountPath: /keys
+              name: key-pair
+            - mountPath: /root/.mina-config
+              name: mina-config
+          env:
+            {% if variables["producer"] %}
+            - name: MINA_PRIVKEY_PASS
+              value: "{{variables["mina_priv_key"]}}"
+            - name: LOG_LEVEL
+              value: Info
+            - name: FILE_LOG_LEVEL
+              value: Debug
+            - name: EXTRA_FLAGS
+              value: " -block-producer-key /keys/my-wallet"
+            {% endif %}
+            - name: PEER_LIST_URL
+              value: https://storage.googleapis.com/mina-seed-lists/mainnet_seeds.txt
+      initContainers:
+        - name: {{variables["name"]}}-key-pair
+          image: minaprotocol/mina-generate-keypair:1.2.0-fe51f1e
+          args: ["--privkey-path", "/keys/my-wallet"]
+          volumeMounts:
+            - mountPath: /keys
+              name: key-pair
+          env:
+            - name: CODA_PRIVKEY_PASS
+              value: "{{variables["mina_priv_key"]}}"
+          
+        - name: {{variables["name"]}}-keys-config
+          image: alpine
+          command: ["sh", "-c", "cd ~", "chmod 700 /keys", "chmod 600 /keys/my-wallet"]
+          volumeMounts:
+            - mountPath: /keys
+              name: key-pair
+      volumes:
+        - name: key-pair
+          emptyDir: {}
+        - name: mina-config
+          emptyDir: {}

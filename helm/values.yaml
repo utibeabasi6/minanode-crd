@@ -1,0 +1,6 @@
+name: example-node
+
+node:
+  producer: false
+  replicas: 1
+  privKeyPass: test-password

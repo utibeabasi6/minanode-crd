@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: minanode-controller
+spec:
+  selector:
+    matchLabels:
+      app: minanode-controller
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: minanode-controller
+    spec:
+      serviceAccountName: mn-sa
+      containers:
+      - name: minanode-controller
+        image: "utibeabasi6/mn-controller"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8032

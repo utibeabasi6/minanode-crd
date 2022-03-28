@@ -1,0 +1,3 @@
+*.tgz
+mina-node.yaml
+__pycache__

@@ -1,0 +1,9 @@
+apiVersion: "stable.example.com/v1"
+kind: MinaNode
+metadata:
+  name: {{.Values.name}}
+spec:
+  name: {{.Values.name}}
+  producer: {{.Values.node.producer}}
+  replicas: {{.Values.node.replicas}}
+  privKeyPass: {{.Values.node.privKeyPass}}
