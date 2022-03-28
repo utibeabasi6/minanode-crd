@@ -9,6 +9,7 @@ def gen_template(inputfile, variables, output):
         loader=FileSystemLoader("templates"),
         autoescape=select_autoescape()
     )
+    os.makedirs('manifests', exist_ok=True)
     template = env.get_template(inputfile)
     print("Generating template".center(80, "-"))
     with open(f"manifests/{output}", "w") as f:
