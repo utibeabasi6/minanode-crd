@@ -2,6 +2,7 @@ import kopf
 from kubernetes import client, config
 import yaml
 from os import path
+import os
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 def gen_template(inputfile, variables, output):
